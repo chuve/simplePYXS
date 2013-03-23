@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import os
 import sys
 import datetime
 import urllib
@@ -18,7 +19,8 @@ searchRequestsList = [] # Создание списка и запись запр
 for line in searchRequests:
 	searchRequestsList.append(line)
 
-resultFile = open('result_'+siteLink+'_'+todayDate+'.txt','w+') # Создание файла для записи результатов
+resultFileName = 'result_'+siteLink+'_'+todayDate+'.txt'
+resultFile = open(resultFileName,'w+') # Создание файла для записи результатов
 
 searchUrl = 'http://xmlsearch.yandex.ru/xmlsearch?user=echuvelev&key=03.108075721:c7369ceffbf6b8d874ff9de0dfa28c14&query=%s&lr=%s&page=%s' # URL для отправки запросов на сервер xml.yandex.ru
 
@@ -50,6 +52,11 @@ def handler(req, region): # Функция поиска домена в выда
 			position = '>100'
 	return position # возвращает позицию в выдаче
 
-for keyword in searchRequestsList: #цикл для поиска позиций для всех запросов которые есть в файле searchRequests
-	resultFile.write('{0} - {1}.\n'.format(keyword.strip(), handler(keyword,213)))
-resultFile.close()
+def start():
+	print 'Определяем позиции для {0} поисковых запросов...'.format(len(searchRequestsList))
+	for keyword in searchRequestsList: #цикл для поиска позиций для всех запросов которые есть в файле searchRequests
+		resultFile.write('<li>{0} - {1}.</li>\n'.format(keyword.strip(), handler(keyword,213)))
+	resultFile.close()
+	print 'Позиции определены и записаны в файл \"{0}\"'.format(resultFile.name)
+
+# start()
